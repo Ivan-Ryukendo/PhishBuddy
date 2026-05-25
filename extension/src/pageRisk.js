@@ -71,9 +71,31 @@
     };
   }
 
+  function isIndexedTrustedResult(result) {
+    return result &&
+      result.verdict === "clean" &&
+      result.signals &&
+      result.signals.indexedDomain &&
+      result.signals.indexedDomain.status === "indexed";
+  }
+
   function mergeResultWithPageRisk(result, pageRisk) {
     if (!pageRisk || !Array.isArray(pageRisk.reasons) || pageRisk.reasons.length === 0) {
       return result;
+    }
+
+    if (isIndexedTrustedResult(result)) {
+      return {
+        verdict: result.verdict,
+        url: result.url,
+        reasons: result.reasons || [],
+        signals: Object.assign({}, result.signals || {}, {
+          pageRisk: Object.assign({}, pageRisk, {
+            suppressed: true,
+            suppressionReason: "Indexed trusted domains are not downgraded by lightweight page-risk heuristics."
+          })
+        })
+      };
     }
 
     var next = {

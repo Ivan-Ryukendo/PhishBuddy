@@ -41,3 +41,24 @@ const merged = mergeResultWithPageRisk(
 
 assert.strictEqual(merged.verdict, "suspicious");
 assert.strictEqual(merged.signals.pageRisk.status, "suspicious");
+
+const trustedMerged = mergeResultWithPageRisk(
+  {
+    verdict: "clean",
+    url: "https://github.com",
+    reasons: ["github.com is in the indexed trusted-domain list."],
+    signals: {
+      indexedDomain: {
+        status: "indexed",
+        domain: "github.com",
+        matchedDomain: "github.com",
+        reasons: ["github.com is in the indexed trusted-domain list."],
+      },
+    },
+  },
+  suspiciousRisk,
+);
+
+assert.strictEqual(trustedMerged.verdict, "clean");
+assert.strictEqual(trustedMerged.reasons.length, 1);
+assert.strictEqual(trustedMerged.signals.pageRisk.suppressed, true);
