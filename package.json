@@ -13,7 +13,8 @@
     "domains:list": "node scripts/list-domains.mjs",
     "domains:upsert": "node scripts/upsert-domain.mjs",
     "convex:dev": "convex dev",
-    "convex:deploy": "convex deploy"
+    "convex:deploy": "convex deploy",
+    "domains:bulk-upsert": "node scripts/bulk-upsert-domains.mjs"
   },
   "dependencies": {
     "convex": "^1.28.0"
