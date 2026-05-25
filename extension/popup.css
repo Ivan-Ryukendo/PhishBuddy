@@ -5,7 +5,7 @@
 
 body {
   margin: 0;
-  min-width: 370px;
+  width: 370px;
   color: #f3fff6;
   background: #062b12;
 }
@@ -37,8 +37,10 @@ body[data-state="dangerous"] {
   display: grid;
   gap: 18px;
   min-height: 530px;
+  max-width: 370px;
   box-sizing: border-box;
-  padding: 18px;
+  overflow: hidden;
+  padding: 18px 18px 16px;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 38%),
     repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 10px);
@@ -174,8 +176,10 @@ h1 {
 }
 
 .evidence-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 28px;
   min-height: 54px;
-  gap: 12px;
+  column-gap: 12px;
   border-top: 1px solid currentColor;
   padding: 11px 0;
 }
@@ -226,7 +230,7 @@ h1 {
 }
 
 .evidence-mark {
-  margin-left: auto;
+  justify-self: end;
 }
 
 .actions {
@@ -252,6 +256,12 @@ button.secondary {
   justify-content: center;
   gap: 10px;
   border-color: color-mix(in srgb, currentColor 34%, transparent);
+}
+
+button.secondary svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 
 button:disabled {
