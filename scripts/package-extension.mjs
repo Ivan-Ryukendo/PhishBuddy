@@ -22,7 +22,6 @@ async function createPackage(name, manifestName) {
     "src",
     "popup.html",
     "popup.css",
-    "options.html",
     "warning.html",
     "warning.css",
   ]) {

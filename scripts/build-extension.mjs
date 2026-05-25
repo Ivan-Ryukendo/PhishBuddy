@@ -13,7 +13,6 @@ for (const entry of [
   "src",
   "popup.html",
   "popup.css",
-  "options.html",
   "warning.html",
   "warning.css",
   "manifest.chrome.json",

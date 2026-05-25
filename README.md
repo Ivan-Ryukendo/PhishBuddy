@@ -16,7 +16,7 @@ Implemented in this repository:
 - Convex backend action and HTTP endpoint at `POST /check-url`.
 - Cache table for recent URL results.
 - Browser extension source for Chrome Manifest V3 and Firefox Manifest V2.
-- Extension popup, options page, background navigation checks, and warning page assets.
+- Polished extension popup, active-tab checks, optional manual URL checks, page-risk heuristics, background navigation checks, and warning page assets.
 - Unit tests for core logic and extension JavaScript modules.
 - Build scripts that prepare unpacked Chrome and Firefox extension folders under `dist/extension`.
 
@@ -48,7 +48,7 @@ Main boundaries:
 - `convex/` contains the backend HTTP route, Convex action, internal cache query/mutation, and schema.
 - `scripts/` contains build, package, and test orchestration scripts.
 
-The browser extension does not contain provider API keys. It only needs the base URL for the deployed Convex HTTP Actions service, stored through the extension options page.
+The browser extension does not contain provider API keys. It calls the PhishBuddy Convex HTTP Actions service; Google Safe Browsing and VirusTotal keys stay in Convex environment variables.
 
 ## Repository Layout
 
@@ -170,16 +170,16 @@ Chrome:
 2. Enable Developer mode.
 3. Choose "Load unpacked".
 4. Select `dist/extension/chrome`.
-5. Open the PhishBuddy extension options page and set the Convex HTTP Actions base URL, such as `https://your-deployment.convex.site`.
+5. Reload the extension after each new package build.
 
 Firefox:
 
 1. Open `about:debugging#/runtime/this-firefox`.
 2. Choose "Load Temporary Add-on".
 3. Select `dist/extension/firefox/manifest.json`.
-4. Open the PhishBuddy extension options page and set the Convex HTTP Actions base URL.
+4. Reload the temporary add-on after each new package build.
 
-The extension sends checks to:
+The popup checks the active tab automatically. The "Check different site" button reveals a manual URL form for links the user does not want to open. The extension sends URL checks to:
 
 ```text
 {PHISHBUDDY_API_BASE_URL}/check-url

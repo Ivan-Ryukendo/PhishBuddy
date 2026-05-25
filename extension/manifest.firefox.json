@@ -17,13 +17,21 @@
       "src/background.js"
     ]
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
   "browser_action": {
     "default_title": "PhishBuddy",
     "default_popup": "popup.html"
-  },
-  "options_ui": {
-    "page": "options.html",
-    "browser_style": false
   },
   "web_accessible_resources": [
     "warning.html",

@@ -20,7 +20,7 @@
     },
     idle: {
       title: "Check a URL",
-      message: "The current tab is checked automatically. You can paste another URL too."
+      message: "Current tab"
     },
     error: {
       title: "Check failed",

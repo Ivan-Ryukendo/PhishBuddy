@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 const commands = [
   ["node", ["node_modules/vitest/vitest.mjs", "run"]],
   ["node", ["extension/__tests__/apiClient.test.cjs"]],
+  ["node", ["extension/__tests__/pageRisk.test.cjs"]],
   ["node", ["extension/__tests__/ui.test.cjs"]],
 ];
 

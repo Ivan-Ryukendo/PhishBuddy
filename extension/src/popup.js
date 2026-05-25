@@ -4,19 +4,13 @@
   var form = document.getElementById("check-form");
   var urlInput = document.getElementById("url-input");
   var resultEl = document.getElementById("result");
-  var apiForm = document.getElementById("api-form");
-  var apiInput = document.getElementById("api-base-url");
-  var saveStatus = document.getElementById("save-status");
+  var manualToggle = document.getElementById("manual-toggle");
+  var currentDomain = document.getElementById("current-domain");
 
   function setBusy(isBusy) {
-    form.querySelector("button").disabled = isBusy;
-  }
-
-  function loadConfig() {
-    return PhishBuddyConfig.getApiBaseUrl().then(function (baseUrl) {
-      apiInput.value = baseUrl;
-      return baseUrl;
-    });
+    var button = form.querySelector("button");
+    button.disabled = isBusy;
+    manualToggle.disabled = isBusy;
   }
 
   function getRuntime() {
@@ -32,27 +26,59 @@
     }
   }
 
-  function getActiveTabUrl() {
+  function setCurrentDomain(url) {
+    try {
+      currentDomain.textContent = new URL(url).hostname.replace(/^www\./, "");
+    } catch (error) {
+      currentDomain.textContent = "Current tab";
+    }
+  }
+
+  function getActiveTab() {
     var runtime = getRuntime();
     if (!runtime || !runtime.tabs || !runtime.tabs.query) {
-      return Promise.resolve("");
+      return Promise.resolve(null);
     }
 
     var query = { active: true, currentWindow: true };
     if (window.browser && runtime.tabs.query.length < 2) {
       return runtime.tabs.query(query).then(function (tabs) {
-        return tabs && tabs[0] && tabs[0].url ? tabs[0].url : "";
+        return tabs && tabs[0] ? tabs[0] : null;
       });
     }
 
     return new Promise(function (resolve) {
       runtime.tabs.query(query, function (tabs) {
-        resolve(tabs && tabs[0] && tabs[0].url ? tabs[0].url : "");
+        resolve(tabs && tabs[0] ? tabs[0] : null);
       });
     });
   }
 
-  function checkUrl(url) {
+  function collectPageRisk(tabId) {
+    var runtime = getRuntime();
+    if (!runtime || !runtime.tabs || !runtime.tabs.sendMessage || typeof tabId !== "number") {
+      return Promise.resolve(null);
+    }
+
+    var message = { type: "PHISHBUDDY_COLLECT_PAGE_RISK" };
+    if (window.browser && runtime.tabs.sendMessage.length < 3) {
+      return runtime.tabs.sendMessage(tabId, message).catch(function () {
+        return null;
+      });
+    }
+
+    return new Promise(function (resolve) {
+      runtime.tabs.sendMessage(tabId, message, function (payload) {
+        if (runtime.runtime && runtime.runtime.lastError) {
+          resolve(null);
+          return;
+        }
+        resolve(payload || null);
+      });
+    });
+  }
+
+  function checkUrl(url, tabId) {
     if (!isWebUrl(url)) {
       PhishBuddyUi.renderVerdict(resultEl, {
         verdict: "error",
@@ -62,12 +88,19 @@
     }
 
     urlInput.value = url;
+    setCurrentDomain(url);
     PhishBuddyUi.renderVerdict(resultEl, "loading");
     setBusy(true);
 
-    return PhishBuddyConfig.getApiBaseUrl().then(function (apiBaseUrl) {
-      return PhishBuddyApi.checkUrl(apiBaseUrl, url);
-    }).then(function (result) {
+    return Promise.all([
+      PhishBuddyConfig.getApiBaseUrl().then(function (apiBaseUrl) {
+        return PhishBuddyApi.checkUrl(apiBaseUrl, url);
+      }),
+      collectPageRisk(tabId).then(function (payload) {
+        return payload ? PhishBuddyPageRisk.summarizePageRisk(payload) : null;
+      })
+    ]).then(function (parts) {
+      var result = PhishBuddyPageRisk.mergeResultWithPageRisk(parts[0], parts[1]);
       PhishBuddyUi.renderVerdict(resultEl, result);
     }).catch(function (error) {
       PhishBuddyUi.renderVerdict(resultEl, {
@@ -80,31 +113,26 @@
   }
 
   function checkActiveTab() {
-    return getActiveTabUrl().then(function (url) {
-      if (!url) {
+    return getActiveTab().then(function (tab) {
+      if (!tab || !tab.url) {
         return;
       }
-      urlInput.value = url;
-      return checkUrl(url);
+      return checkUrl(tab.url, tab.id);
     });
   }
 
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-    checkUrl(urlInput.value.trim());
+  manualToggle.addEventListener("click", function () {
+    form.hidden = !form.hidden;
+    if (!form.hidden) {
+      urlInput.focus();
+    }
   });
 
-  apiForm.addEventListener("submit", function (event) {
+  form.addEventListener("submit", function (event) {
     event.preventDefault();
-    PhishBuddyConfig.setApiBaseUrl(apiInput.value).then(function (baseUrl) {
-      apiInput.value = baseUrl;
-      saveStatus.textContent = "Saved";
-      setTimeout(function () {
-        saveStatus.textContent = "";
-      }, 1600);
-    });
+    checkUrl(urlInput.value.trim(), null);
   });
 
   PhishBuddyUi.renderVerdict(resultEl, "idle");
-  loadConfig().then(checkActiveTab);
+  checkActiveTab();
 })();
