@@ -55,6 +55,38 @@
     };
   }
 
+  function shouldShowNotice(result) {
+    var indexedDomain = result &&
+      result.signals &&
+      result.signals.indexedDomain;
+
+    if (!result || result.verdict === "dangerous") {
+      return false;
+    }
+
+    if (result.verdict !== "clean") {
+      return true;
+    }
+
+    return indexedDomain && indexedDomain.status === "not_indexed";
+  }
+
+  function showNotice(tabId, result) {
+    if (!shouldShowNotice(result) || !runtime.tabs || !runtime.tabs.sendMessage) {
+      return;
+    }
+
+    try {
+      var maybePromise = runtime.tabs.sendMessage(tabId, {
+        type: "PHISHBUDDY_SHOW_NOTICE",
+        result: result
+      });
+      if (maybePromise && typeof maybePromise.catch === "function") {
+        maybePromise.catch(function () {});
+      }
+    } catch (error) {}
+  }
+
   function checkNavigation(tabId, url) {
     if (!isCheckableUrl(url)) {
       return;
@@ -78,6 +110,7 @@
       if (result.verdict === "dangerous") {
         return updateTab(tabId, makeWarningUrl(result));
       }
+      showNotice(tabId, result);
     }).catch(function (error) {
       latestResultsByUrl[url] = {
         verdict: "suspicious",
