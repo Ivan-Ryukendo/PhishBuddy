@@ -1,0 +1,103 @@
+:root {
+  color-scheme: light;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-width: 340px;
+  color: #17202a;
+  background: #f5f7fa;
+}
+
+.popup {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.panel,
+.verdict {
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+}
+
+form {
+  display: grid;
+  gap: 8px;
+}
+
+label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #4a5568;
+}
+
+input {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #bac4d3;
+  border-radius: 6px;
+  padding: 9px 10px;
+  font-size: 14px;
+}
+
+button {
+  border: 0;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #1f6feb;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings button {
+  background: #57606a;
+}
+
+.verdict strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.verdict p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.verdict ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.verdict-clean {
+  border-color: #2da44e;
+}
+
+.verdict-suspicious,
+.verdict-error {
+  border-color: #bf8700;
+}
+
+.verdict-dangerous {
+  border-color: #cf222e;
+}

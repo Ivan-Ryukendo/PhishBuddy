@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "PhishBuddy",
+  "version": "0.1.0",
+  "description": "Checks navigations and pasted URLs with the PhishBuddy backend.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_title": "PhishBuddy",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "warning.html",
+        "warning.css",
+        "src/ui.js",
+        "src/warning.js"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ]
+}

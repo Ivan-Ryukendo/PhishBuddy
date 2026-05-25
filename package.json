@@ -1,0 +1,29 @@
+{
+  "name": "phishbuddy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Open-source phishing detection for desktop browsers, Telegram, and future mobile apps.",
+  "scripts": {
+    "test": "node scripts/run-tests.mjs",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run build:extension",
+    "build:extension": "node scripts/build-extension.mjs",
+    "package:extension": "npm run build:extension && node scripts/package-extension.mjs",
+    "convex:dev": "convex dev",
+    "convex:deploy": "convex deploy"
+  },
+  "dependencies": {
+    "convex": "^1.28.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.305",
+    "@types/node": "^22.15.21",
+    "esbuild": "^0.25.5",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dangerous URL blocked</title>
+    <link rel="stylesheet" href="warning.css">
+  </head>
+  <body>
+    <main class="warning">
+      <section class="content">
+        <p class="eyebrow">PhishBuddy warning</p>
+        <h1>Dangerous URL blocked</h1>
+        <p class="blocked-url" id="blocked-url"></p>
+        <div id="warning-result" class="verdict verdict-dangerous" aria-live="polite"></div>
+        <div class="actions">
+          <button id="continue-button" type="button">Continue anyway</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="src/ui.js"></script>
+    <script src="src/warning.js"></script>
+  </body>
+</html>
