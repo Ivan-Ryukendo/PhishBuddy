@@ -7,9 +7,20 @@ const context = { module: { exports: {} } };
 vm.createContext(context);
 vm.runInContext(fs.readFileSync(path.join(__dirname, "../src/ui.js"), "utf8"), context);
 
-const { getVerdictDisplay } = context.PhishBuddyUi;
+const { getDisplayState, getVerdictDisplay } = context.PhishBuddyUi;
 
-assert.strictEqual(getVerdictDisplay("clean").title, "Clean");
-assert.strictEqual(getVerdictDisplay("suspicious").title, "Suspicious");
-assert.strictEqual(getVerdictDisplay("dangerous").title, "Dangerous");
-assert.strictEqual(getVerdictDisplay("not-real").title, "Suspicious");
+assert.strictEqual(getVerdictDisplay("clean").title, "✓ Secure");
+assert.strictEqual(getVerdictDisplay("suspicious").title, "! Unsure");
+assert.strictEqual(getVerdictDisplay("dangerous").title, "✕ Unsafe");
+assert.strictEqual(getVerdictDisplay("not-real").title, "! Unsure");
+assert.strictEqual(
+  getDisplayState({
+    verdict: "clean",
+    signals: {
+      indexedDomain: {
+        status: "not_indexed",
+      },
+    },
+  }),
+  "notIndexed",
+);

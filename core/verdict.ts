@@ -1,9 +1,10 @@
-import type { LookalikeSignal } from "./similarity";
+import type { IndexedDomainSignal, LookalikeSignal } from "./similarity";
 import type { ProviderSignal } from "./providers";
 
 export type Verdict = "clean" | "suspicious" | "dangerous";
 
 export type SafetySignals = {
+  indexedDomain: IndexedDomainSignal | null;
   lookalike: LookalikeSignal | null;
   googleSafeBrowsing: ProviderSignal | null;
   virusTotal: ProviderSignal | null;
@@ -35,6 +36,12 @@ export function combineVerdict(url: string, signals: SafetySignals): SafetyResul
   if (signals.lookalike) {
     for (const reason of signals.lookalike.reasons) {
       reasons.add(`${signals.lookalike.candidateDomain}: ${reason}`);
+    }
+  }
+
+  if (signals.indexedDomain?.status === "indexed") {
+    for (const reason of signals.indexedDomain.reasons) {
+      reasons.add(reason);
     }
   }
 

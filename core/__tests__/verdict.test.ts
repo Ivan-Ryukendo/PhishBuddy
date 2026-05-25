@@ -3,6 +3,12 @@ import { combineVerdict } from "../verdict";
 import type { SafetySignals } from "../verdict";
 
 const baseSignals: SafetySignals = {
+  indexedDomain: {
+    status: "not_indexed",
+    domain: "example.com",
+    matchedDomain: null,
+    reasons: ["example.com has not been indexed as a trusted domain yet."],
+  },
   lookalike: null,
   googleSafeBrowsing: { provider: "googleSafeBrowsing", status: "clean", reasons: [] },
   virusTotal: { provider: "virusTotal", status: "skipped", reasons: ["VirusTotal API key is not configured"] },
@@ -12,6 +18,21 @@ const baseSignals: SafetySignals = {
 describe("combineVerdict", () => {
   it("returns clean when no signal is suspicious", () => {
     expect(combineVerdict("https://example.com", baseSignals).verdict).toBe("clean");
+  });
+
+  it("includes indexed-domain reasons for indexed clean domains", () => {
+    const result = combineVerdict("https://google.com", {
+      ...baseSignals,
+      indexedDomain: {
+        status: "indexed",
+        domain: "google.com",
+        matchedDomain: "google.com",
+        reasons: ["google.com is in the indexed trusted-domain list."],
+      },
+    });
+
+    expect(result.verdict).toBe("clean");
+    expect(result.reasons).toContain("google.com is in the indexed trusted-domain list.");
   });
 
   it("returns suspicious for lookalike matches", () => {

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { detectLookalike, levenshtein, normalizeForSimilarity } from "../similarity";
+import {
+  checkIndexedDomain,
+  detectLookalike,
+  levenshtein,
+  normalizeForSimilarity,
+} from "../similarity";
 
 describe("levenshtein", () => {
   it("computes edit distance", () => {
@@ -26,5 +31,26 @@ describe("detectLookalike", () => {
 
   it("flags embedded brand domains", () => {
     expect(detectLookalike("paypal-secure.example")?.protectedDomain).toBe("paypal.com");
+  });
+
+  it("does not flag arbitrary domains because of short protected domains", () => {
+    expect(detectLookalike("example.com")).toBeNull();
+    expect(detectLookalike("a.com")).toBeNull();
+  });
+});
+
+describe("checkIndexedDomain", () => {
+  it("marks protected domains as indexed", () => {
+    expect(checkIndexedDomain("google.com")).toMatchObject({
+      status: "indexed",
+      matchedDomain: "google.com",
+    });
+  });
+
+  it("marks unknown domains as not indexed", () => {
+    expect(checkIndexedDomain("example.test")).toMatchObject({
+      status: "not_indexed",
+      matchedDomain: null,
+    });
   });
 });

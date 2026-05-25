@@ -9,17 +9,50 @@ export type LookalikeSignal = {
   severity: "low" | "medium" | "high";
 };
 
+export type IndexedDomainSignal = {
+  status: "indexed" | "not_indexed";
+  domain: string;
+  matchedDomain: string | null;
+  reasons: string[];
+};
+
 export const PROTECTED_DOMAINS = [
   "google.com",
+  "youtube.com",
   "microsoft.com",
+  "microsoftonline.com",
   "apple.com",
   "amazon.com",
   "facebook.com",
-  "paypal.com",
+  "instagram.com",
+  "whatsapp.com",
+  "chatgpt.com",
+  "wikipedia.org",
+  "reddit.com",
+  "x.com",
+  "bing.com",
+  "yahoo.com",
+  "duckduckgo.com",
+  "tiktok.com",
   "netflix.com",
+  "paypal.com",
   "chase.com",
   "bankofamerica.com",
   "wellsfargo.com",
+  "canva.com",
+  "github.com",
+  "linkedin.com",
+  "adobe.com",
+  "dropbox.com",
+  "office.com",
+  "outlook.com",
+  "icloud.com",
+  "salesforce.com",
+  "shopify.com",
+  "ebay.com",
+  "walmart.com",
+  "target.com",
+  "bestbuy.com",
 ] as const;
 
 const HOMOGRAPH_MAP: Record<string, string> = {
@@ -76,6 +109,33 @@ export function normalizeForSimilarity(value: string): string {
     .join("");
 }
 
+export function checkIndexedDomain(
+  hostnameOrDomain: string,
+  indexedDomains: readonly string[] = PROTECTED_DOMAINS,
+): IndexedDomainSignal {
+  const domain = hostnameOrDomain.includes(".")
+    ? extractDomain(hostnameOrDomain)
+    : hostnameOrDomain.toLowerCase();
+  const matchedDomain =
+    indexedDomains.find((indexedDomain) => domain === indexedDomain) ?? null;
+
+  if (matchedDomain) {
+    return {
+      status: "indexed",
+      domain,
+      matchedDomain,
+      reasons: [`${domain} is in the indexed trusted-domain list.`],
+    };
+  }
+
+  return {
+    status: "not_indexed",
+    domain,
+    matchedDomain: null,
+    reasons: [`${domain} has not been indexed as a trusted domain yet.`],
+  };
+}
+
 export function detectLookalike(
   hostnameOrDomain: string,
   protectedDomains: readonly string[] = PROTECTED_DOMAINS,
@@ -100,17 +160,22 @@ export function detectLookalike(
       reasons.push("domain becomes a protected brand after character normalization");
     }
 
-    if (distance > 0 && distance <= 1) {
+    if (protectedName.length >= 4 && distance > 0 && distance <= 1) {
       reasons.push("domain is one edit away from a protected brand");
     }
 
-    if (candidateName.includes(protectedName) && candidateName !== protectedName) {
+    if (
+      protectedName.length >= 4 &&
+      candidateName.includes(protectedName) &&
+      candidateName !== protectedName
+    ) {
       reasons.push("domain embeds a protected brand name");
     }
 
     const suspiciousHyphen =
-      candidateName.startsWith(`${protectedName}-`) ||
-      candidateName.endsWith(`-${protectedName}`);
+      protectedName.length >= 4 &&
+      (candidateName.startsWith(`${protectedName}-`) ||
+        candidateName.endsWith(`-${protectedName}`));
     if (suspiciousHyphen) {
       reasons.push("domain uses a protected brand with a hyphenated modifier");
     }

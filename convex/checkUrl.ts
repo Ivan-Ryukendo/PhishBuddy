@@ -3,6 +3,7 @@ import { action, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import {
   checkGoogleSafeBrowsing,
+  checkIndexedDomain,
   checkVirusTotal,
   combineVerdict,
   detectLookalike,
@@ -32,11 +33,14 @@ export const checkUrl = action({
         reasons: cached.reasons,
         signals: {
           ...cached.signals,
+          indexedDomain:
+            cached.signals.indexedDomain ?? checkIndexedDomain(normalized.hostname),
           cache: true,
         },
       };
     }
 
+    const indexedDomain = checkIndexedDomain(normalized.hostname);
     const lookalike = detectLookalike(normalized.hostname);
     const [googleSafeBrowsing, virusTotal] = await Promise.all([
       checkGoogleSafeBrowsing(normalized.url),
@@ -45,6 +49,7 @@ export const checkUrl = action({
 
     const result = combineVerdict(normalized.url, {
       lookalike,
+      indexedDomain,
       googleSafeBrowsing,
       virusTotal,
       cache: false,

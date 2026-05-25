@@ -93,11 +93,26 @@ button:disabled {
   border-color: #2da44e;
 }
 
+.verdict-clean strong {
+  color: #1a7f37;
+}
+
 .verdict-suspicious,
+.verdict-notIndexed,
 .verdict-error {
   border-color: #bf8700;
 }
 
+.verdict-suspicious strong,
+.verdict-notIndexed strong,
+.verdict-error strong {
+  color: #9a6700;
+}
+
 .verdict-dangerous {
   border-color: #cf222e;
+}
+
+.verdict-dangerous strong {
+  color: #cf222e;
 }

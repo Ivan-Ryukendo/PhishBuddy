@@ -33,6 +33,7 @@ export default defineSchema({
     verdict,
     reasons: v.array(v.string()),
     signals: v.object({
+      indexedDomain: v.optional(v.union(v.null(), v.any())),
       lookalike: v.union(v.null(), v.any()),
       googleSafeBrowsing: v.union(v.null(), providerSignal),
       virusTotal: v.union(v.null(), providerSignal),
