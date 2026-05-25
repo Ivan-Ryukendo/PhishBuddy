@@ -26,6 +26,18 @@ const providerSignal = v.object({
   raw: v.optional(v.any()),
 });
 
+const domainStatus = v.union(
+  v.literal("verified"),
+  v.literal("watchlist"),
+  v.literal("blocked"),
+);
+
+const reportStatus = v.union(
+  v.literal("pending"),
+  v.literal("reviewed"),
+  v.literal("rejected"),
+);
+
 export default defineSchema({
   cachedUrlResults: defineTable({
     originalUrl: v.string(),
@@ -37,9 +49,45 @@ export default defineSchema({
       lookalike: v.union(v.null(), v.any()),
       googleSafeBrowsing: v.union(v.null(), providerSignal),
       virusTotal: v.union(v.null(), providerSignal),
+      domainRecord: v.optional(v.union(v.null(), v.any())),
       cache: v.boolean(),
     }),
     createdAt: v.number(),
     expiresAt: v.number(),
   }).index("by_normalized_url", ["normalizedUrl"]),
+  domainRecords: defineTable({
+    domain: v.string(),
+    status: domainStatus,
+    reason: v.string(),
+    source: v.string(),
+    manuallyReviewed: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    lastCheckedAt: v.optional(v.number()),
+  })
+    .index("by_domain", ["domain"])
+    .index("by_status", ["status"]),
+  linkReports: defineTable({
+    url: v.string(),
+    domain: v.string(),
+    note: v.optional(v.string()),
+    source: v.union(
+      v.literal("extension"),
+      v.literal("web"),
+      v.literal("telegram"),
+      v.literal("maintainer"),
+    ),
+    status: reportStatus,
+    createdAt: v.number(),
+    reviewedAt: v.optional(v.number()),
+  })
+    .index("by_domain", ["domain"])
+    .index("by_status", ["status"]),
+  rateLimitBuckets: defineTable({
+    key: v.string(),
+    route: v.string(),
+    windowStart: v.number(),
+    count: v.number(),
+    updatedAt: v.number(),
+  }).index("by_key_route", ["key", "route"]),
 });

@@ -8,6 +8,12 @@ export type SafetySignals = {
   lookalike: LookalikeSignal | null;
   googleSafeBrowsing: ProviderSignal | null;
   virusTotal: ProviderSignal | null;
+  domainRecord?: {
+    domain: string;
+    status: "verified" | "watchlist" | "blocked";
+    reason: string;
+    updatedAt: number;
+  } | null;
   cache: boolean;
 };
 

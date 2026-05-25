@@ -3,14 +3,15 @@
 
   var runtime = window.browser || window.chrome;
   var params = new URLSearchParams(window.location.search);
-  var blockedUrl = params.get("url") || "";
+  var blockedUrl = normalizeBlockedUrl(params.get("url") || "");
+  var verdict = normalizeVerdict(params.get("verdict") || "dangerous");
   var urlEl = document.getElementById("blocked-url");
   var resultEl = document.getElementById("warning-result");
   var continueButton = document.getElementById("continue-button");
 
   urlEl.textContent = blockedUrl;
   PhishBuddyUi.renderVerdict(resultEl, {
-    verdict: params.get("verdict") || "dangerous",
+    verdict: verdict,
     reasons: []
   });
 
@@ -46,4 +47,22 @@
       }
     }
   });
+
+  function normalizeBlockedUrl(value) {
+    try {
+      var parsed = new URL(value);
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        return "";
+      }
+      return parsed.href;
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function normalizeVerdict(value) {
+    return value === "clean" || value === "suspicious" || value === "dangerous"
+      ? value
+      : "dangerous";
+  }
 })();

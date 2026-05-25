@@ -10,6 +10,8 @@
     "build": "npm run build:extension",
     "build:extension": "node scripts/build-extension.mjs",
     "package:extension": "npm run build:extension && node scripts/package-extension.mjs",
+    "domains:list": "node scripts/list-domains.mjs",
+    "domains:upsert": "node scripts/upsert-domain.mjs",
     "convex:dev": "convex dev",
     "convex:deploy": "convex deploy"
   },

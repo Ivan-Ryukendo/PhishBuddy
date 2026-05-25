@@ -15,6 +15,8 @@ Implemented in this repository:
 - Shared TypeScript core for URL normalization, lookalike-domain detection, provider checks, and verdict combination.
 - Convex backend action and HTTP endpoint at `POST /check-url`.
 - Cache table for recent URL results.
+- Public Convex domain index for verified, watchlist, and blocked domain labels.
+- Pending link-report intake for community or extension-submitted review requests.
 - Browser extension source for Chrome Manifest V3 and Firefox Manifest V2.
 - Polished extension popup, active-tab checks, optional manual URL checks, page-risk heuristics, background navigation checks, and warning page assets.
 - Unit tests for core logic and extension JavaScript modules.
@@ -35,7 +37,7 @@ Planned later platforms are documented in [docs/roadmap.md](docs/roadmap.md). Th
 Browser extension
   -> POST { url } to Convex HTTP Actions URL /check-url
     -> Convex action normalizes the URL
-    -> checks cachedUrlResults
+    -> checks public domain labels and cachedUrlResults
     -> runs lookalike, Google Safe Browsing, and VirusTotal checks
     -> combines signals into clean/suspicious/dangerous
   <- JSON safety result with reasons and signals
@@ -45,7 +47,7 @@ Main boundaries:
 
 - `extension/` contains browser UI, extension manifests, and client-side JavaScript.
 - `core/` contains reusable TypeScript safety logic used by Convex and covered by tests.
-- `convex/` contains the backend HTTP route, Convex action, internal cache query/mutation, and schema.
+- `convex/` contains the backend HTTP routes, Convex actions, public domain index, report intake, cache, and schema.
 - `scripts/` contains build, package, and test orchestration scripts.
 
 The browser extension does not contain provider API keys. It calls the PhishBuddy Convex HTTP Actions service; Google Safe Browsing and VirusTotal keys stay in Convex environment variables.
@@ -56,8 +58,8 @@ The browser extension does not contain provider API keys. It calls the PhishBudd
 .
 +-- convex/
 |   +-- checkUrl.ts           # Convex action plus cache query/mutation
-|   +-- http.ts               # HTTP route for POST /check-url
-|   +-- schema.ts             # cachedUrlResults table
+|   +-- http.ts               # HTTP routes for checks, public records, and reports
+|   +-- schema.ts             # cache, public domain index, and report tables
 +-- core/
 |   +-- providers.ts          # Google Safe Browsing and VirusTotal clients
 |   +-- similarity.ts         # lookalike-domain detection
@@ -73,8 +75,10 @@ The browser extension does not contain provider API keys. It calls the PhishBudd
 |   +-- __tests__/            # extension module tests
 +-- scripts/
 |   +-- build-extension.mjs
+|   +-- list-domains.mjs
 |   +-- package-extension.mjs
 |   +-- run-tests.mjs
+|   +-- upsert-domain.mjs
 +-- .env.example
 +-- package.json
 +-- tsconfig.json
@@ -113,6 +117,7 @@ Variables currently documented by the repository:
 | `PHISHBUDDY_API_BASE_URL` | Local/developer configuration and extension setup reference | Convex HTTP Actions base URL, for example `https://your-deployment.convex.site`. |
 | `GOOGLE_SAFE_BROWSING_API_KEY` | Convex/backend runtime | Enables Google Safe Browsing provider checks. |
 | `VIRUSTOTAL_API_KEY` | Convex/backend runtime | Enables VirusTotal provider checks. |
+| `PHISHBUDDY_MAINTAINER_TOKEN` | Convex/backend runtime and local maintainer scripts | Authorizes trusted maintainers to update public domain labels. Use a long random value and never commit it. |
 | `PHISHBUDDY_CACHE_TTL_SECONDS` | Reserved example setting | Not currently read by the runtime. The backend uses a 15-minute constant in `convex/checkUrl.ts`. |
 
 Do not put provider keys into the extension source or commit real secrets. Configure backend secrets through the Convex environment for the deployment that handles safety checks.
@@ -156,6 +161,16 @@ npm run convex:dev
 npm run convex:deploy
 ```
 
+Domain index helper scripts:
+
+```powershell
+npm run domains:list
+npm run domains:list -- watchlist
+npm run domains:upsert -- github.com verified "Official GitHub domain" manual-review
+npm run domains:upsert -- suspicious-login.example watchlist "Reported for review" community-report
+npm run domains:upsert -- phishing.example blocked "Confirmed phishing campaign" provider-review
+```
+
 ## Browser Extension Installation
 
 Build the unpacked extension folders first:
@@ -197,17 +212,32 @@ The Convex backend exposes a CORS-enabled HTTP route in `convex/http.ts`:
 
 - `OPTIONS /check-url`
 - `POST /check-url`
+- `GET /domains`
+- `OPTIONS /domains`
+- `POST /reports`
+- `OPTIONS /reports`
+- `POST /maintainer/domains`
+- `OPTIONS /maintainer/domains`
 
 `POST /check-url` expects JSON with a string `url` field. It calls `api.checkUrl.checkUrl`, which:
 
 - normalizes the submitted URL,
+- checks the public domain index,
 - checks `cachedUrlResults` for a non-expired result,
+- blocks immediately if the domain is listed as `blocked`,
 - runs lookalike-domain detection,
 - checks Google Safe Browsing and VirusTotal when keys are configured,
+- applies `verified`, `watchlist`, or `blocked` labels to the final verdict,
 - stores a cached result,
 - returns a `SafetyResult`.
 
-The cache schema is defined in `convex/schema.ts` and indexed by `normalizedUrl`.
+`GET /domains` returns public domain records. These records are safe to publish because they contain only domain, label, public reason, and update time.
+
+`POST /reports` accepts public link reports and stores them as `pending`. Reports do not change user-facing verdicts until reviewed.
+
+`POST /maintainer/domains` updates public labels and requires `Authorization: Bearer <PHISHBUDDY_MAINTAINER_TOKEN>`. Use this for trusted maintainer workflows only.
+
+The cache, public domain index, and report schemas are defined in `convex/schema.ts`.
 
 For local Convex development, use:
 
@@ -243,6 +273,8 @@ npm run package:extension
 - Treat submitted URLs as sensitive data. URLs can reveal accounts, workplaces, private messages, tokens, or personal activity.
 - Do not commit API keys, tokens, secrets, private Convex configuration, or packaged credentials.
 - Provider API keys belong in the backend environment, not in browser extension files.
+- Public domain records must not include provider raw responses, maintainer tokens, submitter identities, private report notes, or sensitive URL paths.
+- Public reports are accepted as pending review items only. Never let an unreviewed public report automatically mark a domain as blocked.
 - The current backend stores cached URL results in Convex to reduce repeat provider calls. Review retention behavior carefully before production use.
 - The current CORS policy in `convex/http.ts` allows all origins. That is practical for extension development, but production deployments should review access controls and abuse prevention.
 - A `clean` result means no configured check produced a warning. It does not prove that a URL is safe.
