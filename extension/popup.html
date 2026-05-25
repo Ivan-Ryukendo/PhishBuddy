@@ -10,7 +10,11 @@
     <main class="popup">
       <header class="topbar">
         <div class="brand">
-          <span class="mark" aria-hidden="true">PB</span>
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2 4.5 5.2v6.1c0 4.6 3 8.8 7.5 10.7 4.5-1.9 7.5-6.1 7.5-10.7V5.2L12 2zm0 4.1 3.7 1.6v3.6c0 2.5-1.4 4.9-3.7 6.3-2.3-1.4-3.7-3.8-3.7-6.3V7.7L12 6.1z"></path>
+            </svg>
+          </span>
           <div>
             <h1>PhishBuddy</h1>
             <p id="current-domain">Checking current tab</p>
@@ -26,14 +30,17 @@
       <section id="result" class="verdict verdict-idle" aria-live="polite"></section>
 
       <div class="actions">
-        <button id="manual-toggle" type="button" class="secondary">Check different site</button>
+        <button id="manual-toggle" type="button" class="secondary">
+          <span aria-hidden="true">⌕</span>
+          Check different site
+        </button>
       </div>
 
       <form id="check-form" class="manual-check" hidden>
-        <label for="url-input">URL</label>
+        <label for="url-input">Search a link</label>
         <div class="input-row">
           <input id="url-input" type="url" placeholder="https://example.com" required>
-          <button type="submit">Check</button>
+          <button type="submit" aria-label="Check pasted URL">Check</button>
         </div>
       </form>
     </main>
