@@ -55,6 +55,19 @@
     var indexedDomain = resultOrState &&
       resultOrState.signals &&
       resultOrState.signals.indexedDomain;
+    var domainRecord = resultOrState &&
+      resultOrState.signals &&
+      resultOrState.signals.domainRecord;
+
+    if (
+      verdict === "clean" &&
+      domainRecord &&
+      domainRecord.status === "verified" &&
+      indexedDomain &&
+      indexedDomain.status === "not_indexed"
+    ) {
+      return "clean";
+    }
 
     if (verdict === "clean" && indexedDomain && indexedDomain.status === "not_indexed") {
       return "notIndexed";

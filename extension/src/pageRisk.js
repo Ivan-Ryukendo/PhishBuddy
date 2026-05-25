@@ -72,6 +72,14 @@
   }
 
   function isIndexedTrustedResult(result) {
+    var domainRecord = result &&
+      result.signals &&
+      result.signals.domainRecord;
+
+    if (result.verdict === "clean" && domainRecord && domainRecord.status === "verified") {
+      return true;
+    }
+
     return result &&
       result.verdict === "clean" &&
       result.signals &&

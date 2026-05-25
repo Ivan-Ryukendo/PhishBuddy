@@ -69,7 +69,18 @@
       return "dangerous";
     }
 
+    var domainRecord = result.signals && result.signals.domainRecord;
     var indexedDomain = result.signals && result.signals.indexedDomain;
+    if (
+      result.verdict === "clean" &&
+      domainRecord &&
+      domainRecord.status === "verified" &&
+      indexedDomain &&
+      indexedDomain.status === "not_indexed"
+    ) {
+      return "clean";
+    }
+
     if (result.verdict === "clean" && indexedDomain && indexedDomain.status === "not_indexed") {
       return "notIndexed";
     }
@@ -168,6 +179,7 @@
 
   var runtime = window.browser || window.chrome;
   if (!runtime || !runtime.runtime || !runtime.runtime.onMessage) {
+    exportForTests();
     return;
   }
 
@@ -190,4 +202,15 @@
 
     return false;
   });
+
+  exportForTests();
+
+  function exportForTests() {
+    window.PhishBuddyContent = {
+      getNoticeState: getNoticeState
+    };
+    if (typeof module !== "undefined") {
+      module.exports = window.PhishBuddyContent;
+    }
+  }
 })();

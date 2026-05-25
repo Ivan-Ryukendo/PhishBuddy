@@ -59,8 +59,21 @@
     var indexedDomain = result &&
       result.signals &&
       result.signals.indexedDomain;
+    var domainRecord = result &&
+      result.signals &&
+      result.signals.domainRecord;
 
     if (!result || result.verdict === "dangerous") {
+      return false;
+    }
+
+    if (
+      result.verdict === "clean" &&
+      domainRecord &&
+      domainRecord.status === "verified" &&
+      indexedDomain &&
+      indexedDomain.status === "not_indexed"
+    ) {
       return false;
     }
 
@@ -147,4 +160,12 @@
 
     return false;
   });
+
+  global.PhishBuddyBackground = {
+    shouldShowNotice: shouldShowNotice
+  };
+
+  if (typeof module !== "undefined") {
+    module.exports = global.PhishBuddyBackground;
+  }
 })(typeof globalThis !== "undefined" ? globalThis : self);

@@ -62,3 +62,81 @@ const trustedMerged = mergeResultWithPageRisk(
 assert.strictEqual(trustedMerged.verdict, "clean");
 assert.strictEqual(trustedMerged.reasons.length, 1);
 assert.strictEqual(trustedMerged.signals.pageRisk.suppressed, true);
+
+const convexVerifiedMerged = mergeResultWithPageRisk(
+  {
+    verdict: "clean",
+    url: "https://services.nidw.gov.bd/nid-pub/",
+    reasons: ["services.nidw.gov.bd is verified in the public PhishBuddy index."],
+    signals: {
+      domainRecord: {
+        status: "verified",
+        domain: "services.nidw.gov.bd",
+      },
+      indexedDomain: {
+        status: "not_indexed",
+      },
+    },
+  },
+  suspiciousRisk,
+);
+
+assert.strictEqual(convexVerifiedMerged.verdict, "clean");
+assert.strictEqual(convexVerifiedMerged.reasons.length, 1);
+assert.strictEqual(convexVerifiedMerged.signals.pageRisk.suppressed, true);
+
+const suspiciousVerifiedMerged = mergeResultWithPageRisk(
+  {
+    verdict: "suspicious",
+    url: "https://services.nidw.gov.bd/nid-pub/",
+    reasons: ["A provider flagged this URL as suspicious."],
+    signals: {
+      domainRecord: {
+        status: "verified",
+        domain: "services.nidw.gov.bd",
+      },
+      indexedDomain: {
+        status: "not_indexed",
+      },
+    },
+  },
+  suspiciousRisk,
+);
+
+assert.strictEqual(suspiciousVerifiedMerged.verdict, "suspicious");
+assert.ok(suspiciousVerifiedMerged.reasons.includes("Page contains heavily obfuscated or dynamic script patterns."));
+
+const watchlistMerged = mergeResultWithPageRisk(
+  {
+    verdict: "suspicious",
+    url: "https://example-login.net",
+    reasons: ["example-login.net is on the watchlist."],
+    signals: {
+      domainRecord: {
+        status: "watchlist",
+        domain: "example-login.net",
+      },
+    },
+  },
+  suspiciousRisk,
+);
+
+assert.strictEqual(watchlistMerged.verdict, "suspicious");
+assert.ok(watchlistMerged.reasons.includes("Page contains heavily obfuscated or dynamic script patterns."));
+
+const blockedMerged = mergeResultWithPageRisk(
+  {
+    verdict: "dangerous",
+    url: "https://phishing.example",
+    reasons: ["phishing.example is blocked."],
+    signals: {
+      domainRecord: {
+        status: "blocked",
+        domain: "phishing.example",
+      },
+    },
+  },
+  suspiciousRisk,
+);
+
+assert.strictEqual(blockedMerged.verdict, "dangerous");
