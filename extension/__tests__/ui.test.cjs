@@ -9,9 +9,9 @@ vm.runInContext(fs.readFileSync(path.join(__dirname, "../src/ui.js"), "utf8"), c
 
 const { getDisplayState, getVerdictDisplay } = context.PhishBuddyUi;
 
-assert.strictEqual(getVerdictDisplay("clean").title, "✓ Secure");
+assert.strictEqual(getVerdictDisplay("clean").title, "\u2713 Secure");
 assert.strictEqual(getVerdictDisplay("suspicious").title, "! Unsure");
-assert.strictEqual(getVerdictDisplay("dangerous").title, "✕ Unsafe");
+assert.strictEqual(getVerdictDisplay("dangerous").title, "\u2715 Unsafe");
 assert.strictEqual(getVerdictDisplay("not-real").title, "! Unsure");
 assert.strictEqual(
   getDisplayState({

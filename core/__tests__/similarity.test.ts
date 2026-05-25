@@ -45,6 +45,10 @@ describe("checkIndexedDomain", () => {
       status: "indexed",
       matchedDomain: "google.com",
     });
+    expect(checkIndexedDomain("www.google.com")).toMatchObject({
+      status: "indexed",
+      matchedDomain: "google.com",
+    });
   });
 
   it("marks unknown domains as not indexed", () => {

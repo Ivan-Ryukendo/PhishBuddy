@@ -3,7 +3,7 @@
 
   var COPY = {
     clean: {
-      title: "✓ Secure",
+      title: "\u2713 Secure",
       message: "This indexed domain passed the configured safety checks."
     },
     suspicious: {
@@ -11,7 +11,7 @@
       message: "PhishBuddy found warning signs or does not have enough confidence yet."
     },
     dangerous: {
-      title: "✕ Unsafe",
+      title: "\u2715 Unsafe",
       message: "PhishBuddy found high-risk phishing signals for this URL."
     },
     notIndexed: {
@@ -20,7 +20,7 @@
     },
     idle: {
       title: "Check a URL",
-      message: "Paste a URL to check it with PhishBuddy."
+      message: "The current tab is checked automatically. You can paste another URL too."
     },
     error: {
       title: "Check failed",
