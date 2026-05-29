@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "PhishBuddy",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Checks navigations and pasted URLs with the PhishBuddy backend.",
   "browser_specific_settings": {
     "gecko": {
