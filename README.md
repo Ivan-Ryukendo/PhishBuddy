@@ -362,3 +362,14 @@ The PolyForm Noncommercial License includes a full **no-warranty** and
 **no-liability** disclaimer. See [LICENSE](LICENSE) for the binding terms; the
 summary above is provided for convenience and is not a substitute for the
 license text.
+
+## Privacy
+
+PhishBuddy checks links by sending the URL being checked to its safety service,
+and — when enabled — to Google Safe Browsing and VirusTotal. What is collected,
+why, and how long it is kept is described in the privacy policy:
+
+- Readable source: [PRIVACY.md](PRIVACY.md)
+- Hosted version: <https://ivan-ryukendo.github.io/PhishBuddy/privacy.html>
+
+The hosted version is the URL used for browser-store listings.
