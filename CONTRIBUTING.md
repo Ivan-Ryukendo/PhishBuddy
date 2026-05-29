@@ -14,6 +14,29 @@ Read the project overview and blueprint first:
 
 If your change affects product design, platform order, safety results, or how user links are handled, open a discussion or issue before coding.
 
+## Contribution Terms
+
+PhishBuddy is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+
+By submitting a contribution (a pull request, patch, or any other change), you agree that:
+
+- Your contribution is licensed to the project under the **same** PolyForm
+  Noncommercial License 1.0.0 that covers the project (inbound license matches
+  outbound license).
+- You **wrote the contribution yourself, or otherwise have the right to submit
+  it** under that license, and you are not knowingly including code you are not
+  permitted to share.
+
+To confirm this, sign off each commit with the `--signoff` flag:
+
+```powershell
+git commit --signoff -m "Your message"
+```
+
+This adds a `Signed-off-by` line, a lightweight Developer Certificate of Origin
+(DCO) style statement that you have the right to submit the work. No separate
+agreement or signing tool is required.
+
 ## Good First Contributions
 
 Good early contributions include:

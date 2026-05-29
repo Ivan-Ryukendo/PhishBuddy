@@ -3,7 +3,17 @@
   "version": "0.1.1",
   "private": true,
   "type": "module",
-  "description": "Open-source phishing detection for desktop browsers, Telegram, and future mobile apps.",
+  "description": "Source-available phishing detection for desktop browsers, Telegram, and future mobile apps.",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Mirza Gamal Abdel Nasser",
+  "homepage": "https://github.com/Ivan-Ryukendo/PhishBuddy#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ivan-Ryukendo/PhishBuddy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ivan-Ryukendo/PhishBuddy/issues"
+  },
   "scripts": {
     "test": "node scripts/run-tests.mjs",
     "typecheck": "tsc --noEmit",

@@ -1,12 +1,39 @@
-# PhishBuddy
+<p align="center">
+  <img src="assets/branding/phishbuddy-banner.png" alt="PhishBuddy" width="100%">
+</p>
 
-PhishBuddy is an open-source phishing link checker for desktop browsers. The current codebase contains a Chrome and Firefox extension, shared URL safety logic, and a Convex backend that returns one of three plain-language verdicts:
+<h1 align="center">PhishBuddy</h1>
 
-- `clean`
-- `suspicious`
-- `dangerous`
+<p align="center">
+  <em>Check a link before you open it. Get one clear answer: clean, suspicious, or dangerous.</em>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue.svg" alt="License: PolyForm Noncommercial 1.0.0"></a>
+  <img src="https://img.shields.io/badge/node-%3E%3D20-339933.svg?logo=node.js&logoColor=white" alt="Node >= 20">
+  <img src="https://img.shields.io/badge/status-MVP-orange.svg" alt="Status: MVP">
+  <img src="https://img.shields.io/badge/platforms-Chrome%20%7C%20Firefox-555.svg" alt="Platforms: Chrome | Firefox">
+</p>
+
+---
+
+PhishBuddy is a source-available phishing link checker for desktop browsers. The current codebase contains a Chrome and Firefox extension, shared URL safety logic, and a Convex backend that returns one of three plain-language verdicts:
+
+| Verdict | Meaning |
+| --- | --- |
+| `clean` | No configured check produced a warning. |
+| `suspicious` | Something looks unusual or risky, but nothing is confirmed. |
+| `dangerous` | A trusted safety source or strong signal says do not open it. |
 
 The project is intentionally focused on a small MVP: check a URL, combine available safety signals, and show a short reason that a normal user can understand. It is not a replacement for browser protections, password managers, security awareness, or endpoint security tools.
+
+> [!IMPORTANT]
+> **PhishBuddy is a helper, not a guarantee.** No automated checker can catch
+> every threat. A `clean` result means no configured check raised a warning —
+> it does **not** prove a link is safe. Always use your own judgment before
+> entering passwords, payment details, or personal information. PhishBuddy is
+> provided without warranty and its authors are not liable for missed threats
+> or for any loss arising from its use. See [License](#license) for full terms.
 
 ## Current MVP Status
 
@@ -30,6 +57,32 @@ Provider integrations currently supported by the backend code:
 - Short-lived Convex cache
 
 Planned later platforms are documented in [docs/roadmap.md](docs/roadmap.md). The active implementation focus is still the desktop browser MVP.
+
+## Roadmap
+
+PhishBuddy is built one platform at a time, smallest useful product first. Each
+new platform reuses the same PhishBuddy Safety Service so results stay
+consistent everywhere.
+
+| Phase | Platform | Status | Goal |
+| --- | --- | --- | --- |
+| 1 | **Desktop browser (Chrome & Firefox)** | 🟢 In progress (MVP) | Check links in the browser and return Clean / Suspicious / Dangerous with a plain reason. |
+| 2 | **Telegram bot** | ⚪ Planned | Let users check links received in Telegram chats, using the same safety service. |
+| 3 | **Web app & Android app** | ⚪ Planned | A place to check links outside the browser, shaped around the same simple result. |
+| 4 | **iOS & Safari** | ⚪ Researching | Investigate the best iOS flow (share extension, Safari web extension, or app) and App Store requirements. |
+
+What each later phase still needs to decide:
+
+- **Telegram:** bot command flow, rate limiting, and how results are formatted
+  in chat.
+- **Web & Android:** whether accounts are required, how much link history to
+  keep, privacy controls, and Android packaging.
+- **iOS & Safari:** the final product shape, Safari web-extension packaging, App
+  Store review requirements, and the link-sharing flow.
+
+Later platforms are not started ahead of the browser MVP unless the project
+owner changes the order. See [docs/roadmap.md](docs/roadmap.md) for the full
+plan and [docs/blueprint.md](docs/blueprint.md) for the product direction.
 
 ## Architecture Overview
 
@@ -279,3 +332,33 @@ npm run package:extension
 - The current CORS policy in `convex/http.ts` allows all origins. That is practical for extension development, but production deployments should review access controls and abuse prevention.
 - A `clean` result means no configured check produced a warning. It does not prove that a URL is safe.
 - Provider failures, missing keys, and rate limits are represented as provider signals; they should not be hidden in user-facing behavior.
+
+## License
+
+PhishBuddy is **source-available**, licensed under the
+[PolyForm Noncommercial License 1.0.0](LICENSE).
+
+In plain language:
+
+- ✅ You may **use, study, modify, and share** PhishBuddy for any
+  **noncommercial** purpose — personal use, research, education, hobby
+  projects, and use by nonprofit, educational, public-safety, or government
+  organizations.
+- ✅ You are **welcome to contribute** improvements back to the project.
+- ❌ You may **not** use PhishBuddy, or works based on it, for a **commercial
+  purpose** — including selling it, reselling it, or offering it as a paid or
+  revenue-generating product or service — without a separate commercial
+  license from the copyright holder.
+
+This is intentional. PhishBuddy is meant to stay open to contributors and free
+for the people who need it, while preventing others from repackaging and
+selling the work.
+
+For commercial licensing inquiries, contact the copyright holder,
+**Mirza Gamal Abdel Nasser**, through the
+[project repository](https://github.com/Ivan-Ryukendo/PhishBuddy).
+
+The PolyForm Noncommercial License includes a full **no-warranty** and
+**no-liability** disclaimer. See [LICENSE](LICENSE) for the binding terms; the
+summary above is provided for convenience and is not a substitute for the
+license text.
