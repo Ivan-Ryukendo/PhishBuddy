@@ -1,6 +1,6 @@
 {
   "name": "phishbuddy",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "Source-available phishing detection for desktop browsers, Telegram, and future mobile apps.",
@@ -21,6 +21,7 @@
     "build:extension": "node scripts/build-extension.mjs",
     "package:extension": "npm run build:extension && node scripts/package-extension.mjs",
     "zip:extension": "npm run package:extension && node scripts/zip-extension.mjs",
+    "zip:source": "node scripts/zip-source.mjs",
     "domains:list": "node scripts/list-domains.mjs",
     "domains:upsert": "node scripts/upsert-domain.mjs",
     "convex:dev": "convex dev",

@@ -20,6 +20,34 @@ body {
   width: min(680px, 100%);
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.brand-mark {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  color: #037ec1;
+}
+
+.brand-mark svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+.brand-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
 .eyebrow {
   margin: 0 0 8px;
   font-size: 13px;

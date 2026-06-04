@@ -20,6 +20,7 @@ async function createPackage(name, manifestName) {
 
   for (const entry of [
     "src",
+    "assets",
     "popup.html",
     "popup.css",
     "warning.html",

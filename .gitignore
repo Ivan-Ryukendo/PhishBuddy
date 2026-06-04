@@ -2,9 +2,24 @@ node_modules/
 dist/
 .env
 .env.local
+
+# AI assistant / agent private files — never publish
+.claude/
 .codex/
-.convex/
 .superpowers/
+AGENT.md
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+
+.convex/
 coverage/
 *.log
 *.zip
+
+# Local-only design experiments and unused source assets (kept on disk, not shipped).
+# The approved logo lives in extension/assets/icons/ and IS tracked.
+# assets/branding/ (banner used in README) stays tracked — only the experiments are ignored.
+/design/
+/assets/ico/
+/assets/sefty-color/

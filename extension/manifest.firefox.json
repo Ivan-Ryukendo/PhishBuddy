@@ -1,8 +1,14 @@
 {
   "manifest_version": 2,
   "name": "PhishBuddy",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Checks navigations and pasted URLs with the PhishBuddy backend.",
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "32": "assets/icons/icon-32.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
   "browser_specific_settings": {
     "gecko": {
       "id": "phishbuddy@ivan-ryukendo.github.io",
@@ -39,7 +45,12 @@
   ],
   "browser_action": {
     "default_title": "PhishBuddy",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon-16.png",
+      "32": "assets/icons/icon-32.png",
+      "48": "assets/icons/icon-48.png"
+    }
   },
   "web_accessible_resources": [
     "warning.html",

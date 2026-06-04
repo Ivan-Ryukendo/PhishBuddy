@@ -11,6 +11,7 @@ await mkdir(distRoot, { recursive: true });
 
 for (const entry of [
   "src",
+  "assets",
   "popup.html",
   "popup.css",
   "warning.html",

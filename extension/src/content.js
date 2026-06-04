@@ -88,23 +88,32 @@
     return result.verdict || "suspicious";
   }
 
+  var NOTICE_ICONS = {
+    notIndexed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M7 17 17 7"/></svg>',
+    suspicious: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 3 19h18L12 4z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg>',
+    dangerous: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8M16 8 8 16"/></svg>'
+  };
+
   function getNoticeCopy(result) {
     var state = getNoticeState(result);
     if (state === "dangerous") {
       return {
-        title: "Dangerous site",
-        message: "PhishBuddy found a serious warning for this site."
+        title: "Danger",
+        message: "This site appears risky. Avoid interaction.",
+        icon: NOTICE_ICONS.dangerous
       };
     }
     if (state === "notIndexed") {
       return {
         title: "Not listed yet",
-        message: "This site is not in the trusted index. Use caution."
+        message: "This site is not in the index. Use caution.",
+        icon: NOTICE_ICONS.notIndexed
       };
     }
     return {
-      title: "Caution",
-      message: "This site raised warning signs. Review it before interacting."
+      title: "Warning",
+      message: "This site raised warning signs. Review now.",
+      icon: NOTICE_ICONS.suspicious
     };
   }
 
@@ -141,13 +150,23 @@
     host.setAttribute("data-state", state);
     host.setAttribute("role", "status");
 
+    var icon = document.createElement("span");
+    icon.className = "pb-notice-icon";
+    icon.innerHTML = copy.icon;
+    host.appendChild(icon);
+
+    var text = document.createElement("span");
+    text.className = "pb-notice-text";
+
     var title = document.createElement("strong");
     title.textContent = copy.title;
-    host.appendChild(title);
+    text.appendChild(title);
 
     var message = document.createElement("span");
     message.textContent = copy.message;
-    host.appendChild(message);
+    text.appendChild(message);
+
+    host.appendChild(text);
 
     var dismiss = document.createElement("button");
     dismiss.type = "button";
@@ -158,14 +177,19 @@
 
     var style = document.createElement("style");
     style.textContent = [
-      "#phishbuddy-site-notice{position:fixed;z-index:2147483647;top:12px;left:50%;max-width:min(520px,calc(100vw - 24px));box-sizing:border-box;display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:12px 14px;border:1px solid rgba(0,0,0,.22);border-radius:14px;background:#ffd21f;color:#211a00;box-shadow:0 14px 40px rgba(0,0,0,.22);font:500 14px/1.35 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;transform:translate(-50%,-120%);opacity:0;animation:phishbuddy-slide-in .18s ease-out forwards}",
-      "#phishbuddy-site-notice[data-state='dangerous']{background:#bd1f16;color:#fff;border-color:rgba(255,255,255,.22)}",
-      "#phishbuddy-site-notice strong{grid-column:1;font-size:14px;font-weight:800}",
-      "#phishbuddy-site-notice span{grid-column:1;font-size:13px;font-weight:500}",
-      "#phishbuddy-site-notice button{grid-column:2;grid-row:1/3;appearance:none;border:0;background:rgba(0,0,0,.12);color:inherit;width:28px;height:28px;border-radius:999px;font:700 18px/1 system-ui;cursor:pointer}",
+      "#phishbuddy-site-notice{position:fixed;z-index:2147483647;top:16px;left:50%;width:336px;max-width:calc(100vw - 24px);box-sizing:border-box;display:grid;grid-template-columns:30px minmax(0,1fr) 20px;column-gap:12px;align-items:center;padding:12px;border-radius:10px;background:#ffd21f;color:#211a00;box-shadow:0 14px 40px rgba(0,0,0,.22);font:400 13px/1.35 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;transform:translate(-50%,-130%);opacity:0;animation:phishbuddy-slide-in .18s ease-out forwards}",
+      "#phishbuddy-site-notice[data-state='suspicious']{background:#ed9b16;color:#fff}",
+      "#phishbuddy-site-notice[data-state='dangerous']{background:#ed1c24;color:#fff}",
+      "#phishbuddy-site-notice .pb-notice-icon{display:grid;place-items:center;width:30px;height:30px;color:inherit}",
+      "#phishbuddy-site-notice .pb-notice-icon svg{width:28px;height:28px;display:block}",
+      "#phishbuddy-site-notice .pb-notice-text{min-width:0;display:flex;flex-direction:column;gap:4px}",
+      "#phishbuddy-site-notice strong{font-size:14px;font-weight:700;line-height:1.2}",
+      "#phishbuddy-site-notice .pb-notice-text span{font-size:13px;font-weight:400;line-height:1.2;opacity:.92;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+      "#phishbuddy-site-notice button{appearance:none;border:0;background:transparent;color:inherit;opacity:.7;width:20px;height:20px;padding:0;border-radius:999px;font:400 18px/1 system-ui;cursor:pointer}",
+      "#phishbuddy-site-notice button:hover{opacity:1}",
       "#phishbuddy-site-notice[data-closing='true']{animation:phishbuddy-slide-out .18s ease-out forwards}",
       "@keyframes phishbuddy-slide-in{to{transform:translate(-50%,0);opacity:1}}",
-      "@keyframes phishbuddy-slide-out{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,-120%);opacity:0}}",
+      "@keyframes phishbuddy-slide-out{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,-130%);opacity:0}}",
       "@media (prefers-reduced-motion:reduce){#phishbuddy-site-notice{animation:none;transform:translate(-50%,0);opacity:1}}"
     ].join("");
     host.appendChild(style);

@@ -1,3 +1,19 @@
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/roboto-600.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "M PLUS Rounded 1c";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/mplus-rounded-1c-700.woff2") format("woff2");
+}
+
 :root {
   color-scheme: light;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -5,207 +21,230 @@
 
 body {
   margin: 0;
-  width: 370px;
-  color: #f3fff6;
-  background: #062b12;
-}
+  width: 367px;
 
-body[data-state="idle"],
-body[data-state="loading"],
-body[data-state="error"] {
-  color: #142033;
-  background: #edf2f7;
+  /* Per-state design tokens (overridden below). */
+  --accent: #5b6470;
+  --hero-fg: #1f2937;
+  --msg: #6b7280;
+  --card-border: #e6e9ee;
+  --grad: linear-gradient(180deg, #fbfcfd 0%, #eef1f4 100%);
+
+  color: var(--hero-fg);
+  background: var(--grad);
 }
 
 body[data-state="clean"] {
-  color: #effff3;
-  background: #063916;
+  --accent: #1f9d4d;
+  --hero-fg: #ffffff;
+  --msg: #f0fff5;
+  --card-border: #eef0f2;
+  --grad:
+    radial-gradient(150px 150px at 92% -10%, #33b951, transparent 60%),
+    radial-gradient(150px 150px at -10% 48%, #2fb04c, transparent 60%),
+    linear-gradient(155deg, #1f8f3b 0%, #0f5f28 100%);
 }
 
-body[data-state="suspicious"],
 body[data-state="notIndexed"] {
-  color: #211a00;
-  background: #ffd000;
+  --accent: #a07f0c;
+  --hero-fg: #ffffff;
+  --msg: #fffdf0;
+  --card-border: #eef0f2;
+  --grad:
+    radial-gradient(150px 150px at 92% -10%, #f0c70f, transparent 60%),
+    radial-gradient(150px 150px at -10% 48%, #e6bd0a, transparent 60%),
+    linear-gradient(155deg, #c9a00a 0%, #927c10 100%);
+}
+
+body[data-state="suspicious"] {
+  --accent: #c46a08;
+  --hero-fg: #ffffff;
+  --msg: #fff8ef;
+  --card-border: #eef0f2;
+  --grad:
+    radial-gradient(150px 150px at 92% -10%, #ef9b07, transparent 60%),
+    radial-gradient(150px 150px at -10% 48%, #e89205, transparent 60%),
+    linear-gradient(155deg, #cf7d0a 0%, #9a5708 100%);
 }
 
 body[data-state="dangerous"] {
-  color: #fff4f1;
-  background: #4d0905;
+  --accent: #d11116;
+  --hero-fg: #ffffff;
+  --msg: #fff4f1;
+  --card-border: #eef0f2;
+  --grad:
+    radial-gradient(150px 150px at 92% -10%, #ea4d51, transparent 60%),
+    radial-gradient(150px 150px at -10% 48%, #d23b3f, transparent 60%),
+    linear-gradient(155deg, #a3000a 0%, #6b0003 100%);
 }
 
 .popup {
-  display: grid;
-  gap: 18px;
-  min-height: 530px;
-  max-width: 370px;
-  box-sizing: border-box;
-  overflow: hidden;
-  padding: 18px 18px 16px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 38%),
-    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 10px);
-}
-
-body[data-state="suspicious"] .popup,
-body[data-state="notIndexed"] .popup {
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 40%),
-    repeating-linear-gradient(135deg, rgba(34, 26, 0, 0.05) 0 1px, transparent 1px 10px);
-}
-
-body[data-state="idle"] .popup,
-body[data-state="loading"] .popup,
-body[data-state="error"] .popup {
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2)),
-    repeating-linear-gradient(135deg, rgba(20, 32, 51, 0.04) 0 1px, transparent 1px 10px);
-}
-
-.topbar,
-.brand,
-.actions,
-.input-row,
-.evidence-row,
-.status-pill {
   display: flex;
-  align-items: center;
+  min-height: 360px;
+  box-sizing: border-box;
+  flex-direction: column;
+  gap: 18px;
+  padding: 14px 16px 16px;
 }
 
+/* Header overlays the hero gradient. */
 .topbar {
-  justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid currentColor;
-}
-
-.brand {
-  min-width: 0;
-  gap: 10px;
-}
-
-.mark {
   display: grid;
-  width: 34px;
-  height: 34px;
-  flex: 0 0 auto;
-  place-items: center;
-  color: currentColor;
+  align-items: center;
+  grid-template-columns: 24px 1fr 24px;
+  gap: 12px;
+  color: var(--hero-fg);
 }
 
-.mark svg {
-  width: 28px;
-  height: 28px;
+.brand-mark {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+}
+
+.brand-mark svg {
+  width: 22px;
+  height: 22px;
   fill: currentColor;
 }
 
-h1 {
+.brand-name {
   margin: 0;
-  font-size: 21px;
-  line-height: 1.15;
-}
-
-#current-domain {
-  max-width: 205px;
-  margin: 4px 0 0;
-  overflow: hidden;
-  opacity: 0.78;
+  font-family: "M PLUS Rounded 1c", Inter, system-ui, sans-serif;
   font-size: 13px;
-  line-height: 1.3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  text-align: center;
 }
 
 .icon-link {
   display: grid;
-  width: 34px;
-  height: 34px;
-  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
   place-items: center;
-  border: 1px solid currentColor;
-  border-radius: 10px;
   color: currentColor;
-  opacity: 0.82;
+  opacity: 0.9;
 }
 
 .icon-link svg {
-  width: 17px;
-  height: 17px;
+  width: 21px;
+  height: 21px;
   fill: currentColor;
 }
 
+/* Verdict block (hero + evidence). */
 .verdict {
-  display: grid;
-  gap: 15px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.status-pill {
-  width: max-content;
-  gap: 7px;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  padding: 7px 10px;
-  font-size: 13px;
-  font-weight: 750;
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 0 2px;
+  text-align: center;
+}
+
+.hero-icon {
+  display: grid;
+  width: 88px;
+  height: 88px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--hero-fg);
+}
+
+.hero-icon svg {
+  width: 52px;
+  height: 52px;
+}
+
+/* The caution triangle fills its viewBox far more than the other glyphs, so at
+   52px it reads oversized. Scale it to the Figma source ratio (~46px in this
+   88px circle) and nudge it up ~4px: a bottom-heavy upward triangle centered
+   geometrically looks low, so this makes it read optically centered. */
+body[data-state="suspicious"] .hero-icon svg,
+body[data-state="error"] .hero-icon svg {
+  width: 46px;
+  height: 46px;
+  transform: translateY(-4px);
+}
+
+body[data-state="idle"] .hero-icon,
+body[data-state="loading"] .hero-icon,
+body[data-state="error"] .hero-icon {
+  border: 0;
+  background: #ffffff;
+  color: #9aa3af;
+  box-shadow: 0 10px 26px rgba(20, 32, 51, 0.12);
 }
 
 .verdict-title {
   margin: 0;
-  font-size: 42px;
-  font-weight: 850;
-  line-height: 0.98;
+  color: var(--hero-fg);
+  font-family: "Roboto", Inter, system-ui, sans-serif;
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.0;
+}
+
+.domain-pill {
+  padding: 5px 16px;
+  border: 0.5px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: -0.3px;
 }
 
 .verdict-message {
-  max-width: 290px;
+  max-width: 260px;
   margin: 0;
-  opacity: 0.9;
-  font-size: 15px;
-  line-height: 1.48;
+  color: var(--msg);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
+/* Evidence card. */
 .evidence {
-  display: grid;
-  gap: 0;
-  padding-top: 4px;
-}
-
-.evidence-heading {
-  margin: 0 0 10px;
-  font-size: 14px;
-  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  background: #ffffff;
 }
 
 .evidence-row {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) 28px;
-  min-height: 54px;
+  align-items: center;
+  grid-template-columns: 24px minmax(0, 1fr);
   column-gap: 12px;
-  border-top: 1px solid currentColor;
-  padding: 11px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
 }
 
-.evidence-row:last-child {
-  border-bottom: 1px solid currentColor;
-}
-
-.topbar,
-.icon-link,
-.status-pill,
-.evidence-row {
-  border-color: color-mix(in srgb, currentColor 28%, transparent);
-}
-
-.evidence-icon,
-.evidence-mark {
+.evidence-icon {
   display: grid;
-  width: 27px;
-  height: 27px;
-  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
   place-items: center;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  font-size: 15px;
-  font-weight: 800;
+  color: var(--accent);
+}
+
+.evidence-icon svg {
+  width: 22px;
+  height: 22px;
 }
 
 .evidence-copy {
@@ -213,97 +252,118 @@ h1 {
 }
 
 .evidence-title {
-  margin: 0 0 3px;
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.25;
+  margin: 0 0 1px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 .evidence-detail {
   margin: 0;
   overflow: hidden;
-  opacity: 0.76;
-  font-size: 12px;
-  line-height: 1.3;
+  color: #a6a6a6;
+  font-size: 10px;
+  line-height: 1.4;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.evidence-mark {
-  justify-self: end;
-}
-
+/* Actions + manual check. */
 .actions {
   margin-top: auto;
 }
 
-button {
-  min-height: 45px;
-  border: 1px solid currentColor;
-  border-radius: 10px;
-  padding: 11px 13px;
-  color: currentColor;
-  background: transparent;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-button.secondary {
+.cta {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  border-color: color-mix(in srgb, currentColor 34%, transparent);
+  gap: 8px;
+  min-height: 42px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-button.secondary svg {
-  width: 16px;
-  height: 16px;
+.cta svg {
+  width: 18px;
+  height: 18px;
   fill: currentColor;
 }
 
-button:disabled {
+.cta:disabled {
   opacity: 0.6;
   cursor: default;
 }
 
 .manual-check {
-  display: grid;
-  gap: 8px;
-  border-top: 1px solid color-mix(in srgb, currentColor 28%, transparent);
-  padding-top: 13px;
+  margin-top: -8px;
 }
 
 .manual-check[hidden] {
   display: none;
 }
 
-label {
-  opacity: 0.78;
-  font-size: 12px;
-  font-weight: 800;
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  background: #ffffff;
 }
 
-.input-row {
-  gap: 8px;
+.input-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  fill: #9aa3af;
 }
 
 input {
-  box-sizing: border-box;
   min-width: 0;
-  width: 100%;
-  min-height: 43px;
-  border: 1px solid color-mix(in srgb, currentColor 34%, transparent);
-  border-radius: 10px;
-  padding: 10px 11px;
-  color: currentColor;
-  background: color-mix(in srgb, currentColor 8%, transparent);
+  flex: 1;
+  border: 0;
+  padding: 4px 0;
+  color: #1f2937;
+  background: transparent;
   font-size: 13px;
 }
 
+input:focus {
+  outline: none;
+}
+
 input::placeholder {
-  color: currentColor;
-  opacity: 0.56;
+  color: #9aa3af;
+}
+
+.input-row button {
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.input-row button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
 }
